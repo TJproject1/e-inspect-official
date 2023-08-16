@@ -13,7 +13,7 @@ function CourseAdviserDashboard() {
                 <Image className='w-[20%]' width={200} height={100} src={"/images/pi2.png"}/>
             </div>
             <div className=" mr-3 rounded-full overflow-hidden">
-              <Image src={"/images/avatar.jpg"} width={84} height={84} className='w-full h-full'/>
+              <Image src={"/images/avatar.jpg"} width={64} height={64} className='w-full h-full'/>
             </div>
             <div className=""><CgMenuRight color='#000' size={36}/></div>
         </div>
@@ -172,7 +172,7 @@ function CourseAdviserDashboard() {
 
           <div className="border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-24 text-center p-8">
             <span className="text-sm opacity-40">Click to Scan or Upload picture of a Face</span>
-            <Image src={'/images/face-scan.png'} className="w-full h-fit" width={100} height={100}/>
+            <Image src={'/images/face-scan.png'} className="w-full h-full" width={100} height={100}/>
           </div>
         </section>
 
