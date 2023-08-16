@@ -12,8 +12,8 @@ function CourseAdviserDashboard() {
             <div className=" bg-[#FEFEFE]  text-[#3a3a3a] w-full border-[#EAEAEA]">
                 <Image className='w-[20%]' width={200} height={100} src={"/images/pi2.png"}/>
             </div>
-            <div className=" mr-3">
-              <CgProfile color='#000' size={36} cl/>
+            <div className=" mr-3 rounded-full overflow-hidden">
+              <Image src={"/images/avatar.jpg"} width={84} height={84} className='w-full h-full'/>
             </div>
             <div className=""><CgMenuRight color='#000' size={36}/></div>
         </div>
