@@ -48,7 +48,7 @@ function CourseAdviserDashboard() {
             </div>
           </div>
 
-          <div className="table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20">
+          {/* <div className="table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20">
 
             <div className="flex justify-between items-center ">
               <div className="text-lg">All Courses</div>
@@ -107,6 +107,72 @@ function CourseAdviserDashboard() {
             </div>
            
 
+          </div> */}
+
+          {/* <div className="table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20">
+
+          <div className="flex justify-between items-center ">
+            <div className="text-lg">All Registered Students</div>
+            <div className="text-[0.65rem] opacity-80">Show All</div>
+          </div>
+
+          <div className="w-full overflow-auto">
+            <table className='text-[0.65rem] overflow-scroll  mt-4 w-[220%] text-center'>
+              <thead>
+              <tr className='opacity-50 '>
+                <th>S/N</th>
+                <th>Mat No</th>
+                <th>Name</th>
+                <th>No Of Courses Registered</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>PSC18809922</td>
+                  <td>Thomas Johnson</td>
+                  <td>9</td>
+                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>PSC1909234</td>
+                  <td>David Uwasota</td>
+                  <td>10</td>
+                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>PSC1809292</td>
+                  <td>Jane Williams</td>
+                  <td>10</td>
+                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>PSC1808945</td>
+                  <td>Tobi Michaels</td>
+                  <td>11</td>
+                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>PSC1802238</td>
+                  <td>Jennifer Aworika</td>
+                  <td>8</td>
+                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          </div> */}
+
+          <div className="border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-24 text-center p-8">
+            <span className="text-sm opacity-40">Click to Scan or Upload picture of a Face</span>
+            <Image src={'/images/face-scan.png'} className="w-full h-fit" width={100} height={100}/>
           </div>
         </section>
 
