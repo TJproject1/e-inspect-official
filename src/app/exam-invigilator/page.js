@@ -25,12 +25,16 @@ function ExamInvigilator() {
           <div className="">
             <div className="inputgrp mt-12">
               <label htmlFor="" className='text-[0.79rem] font-bold '>Current Course Exam Being Invigilated</label>
+              {/* to be used when submit button is clicked */}
+              <div className="font-bold text-lg text-center mt-4 text-[#115baa]">MTH 317</div> 
               <div className="flex items-center justify-between w-full h-full">
                 <input type="text" placeholder='Course Code: e.g MTH317' className='border w-[70%] py-3 text-sm px-4 rounded mt-2'/>
                 <button className='py-3 mt-2 px-5 bg-[#115baa] text-white w-[25%] text-[0.75rem] rounded'>Submit</button>
               </div>
             </div>
           </div>
+
+        
 
           {/* <div className="table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20">
 
@@ -153,6 +157,11 @@ function ExamInvigilator() {
 
 
           </div> */}
+
+          <div className="authorized mt-8">
+            <div className="positive flex text-[#115baa] font-semibold">Student is eligible for the Exam <span className='ml-4'><Image src={"/images/check.png"} width={24} height={24} className="w-[24px] h-[24px]"/></span></div>
+            {/* <div className="negative flex text-[#aa2d11] font-semibold">Student is not eligible for the Exam <span className=' ml-2'><Image src={"/images/delete.png"} width={24} height={24} className="w-[24px] h-[24px]"/></span></div> */}
+          </div>
 
           <div className="border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-24 text-center p-8">
             <span className="text-sm opacity-40">Click to Scan before entry</span>
