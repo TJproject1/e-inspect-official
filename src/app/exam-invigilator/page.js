@@ -25,7 +25,10 @@ function ExamInvigilator() {
           <div className="">
             <div className="inputgrp mt-12">
               <label htmlFor="" className='text-[0.79rem] font-bold '>Current Course Exam Being Invigilated</label>
-              <input type="text" placeholder='Course Code: e.g MTH317' className='border w-full py-2 p-4 rounded mt-2'/>
+              <div className="flex items-center justify-between w-full h-full">
+                <input type="text" placeholder='Course Code: e.g MTH317' className='border w-[70%] py-3 text-sm px-4 rounded mt-2'/>
+                <button className='py-3 mt-2 px-5 bg-[#115baa] text-white w-[25%] text-[0.75rem] rounded'>Submit</button>
+              </div>
             </div>
           </div>
 
