@@ -23,7 +23,7 @@ export default function Home() {
             <input
               placeholder="Email Address"
               type="email"
-              className="w-full px-5 py-4 rounded"
+              className="w-full border border-[#3a3a3a] px-5 py-4 rounded"
             />
           </div>
           <div className="input-grp">
@@ -31,7 +31,7 @@ export default function Home() {
             <input
               placeholder="Password"
               type="password"
-              className="w-full px-5 py-4 rounded"
+              className="w-full border border-[#3a3a3a] px-5 py-4 rounded"
             />
             <button className="w-full mt-8 font-semibold bg-[#115baa] text-white p-4 text-lg text-center rounded">
               Login
