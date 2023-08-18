@@ -1,4 +1,5 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import Image from 'next/image'
 import {CgMenuRight, CgProfile} from 'react-icons/cg'
 import {PiStudent} from 'react-icons/pi'
@@ -6,6 +7,8 @@ import {BsBook} from 'react-icons/bs'
 import {HiMiniUserPlus} from 'react-icons/hi2'
 
 function ExamInvigilator() {
+  const [course, setCourse] = useState('')
+  const [showCourse, setShowCourse] = useState(false)
   return (
     <main  className='bg-[#FEFEFE    w-screen'>
         <div className="header border-b  p-5 border-[#EAEAEA] flex w-full items-center justify-between">
@@ -26,10 +29,16 @@ function ExamInvigilator() {
             <div className="inputgrp mt-12">
               <label htmlFor="" className='text-[0.79rem] font-bold '>Current Course Exam Being Invigilated</label>
               {/* to be used when submit button is clicked */}
-              <div className="font-bold text-lg text-center mt-4 text-[#115baa]">MTH 317</div> 
+              <div className={`font-bold text-lg text-center mt-4 text-[#115baa] ${showCourse ? '' : 'hidden'}`}>{course}</div> 
               <div className="flex items-center justify-between w-full h-full">
-                <input type="text" placeholder='Course Code: e.g MTH317' className='border w-[70%] py-3 text-sm px-4 rounded mt-2'/>
-                <button className='py-3 mt-2 px-5 bg-[#115baa] text-white w-[25%] text-[0.75rem] rounded'>Submit</button>
+                <input onChange={(e) => setCourse(e.target.value)} type="text" placeholder='Course Code: e.g MTH317' className={`border w-[70%] py-3 text-sm px-4 rounded mt-2 `}/>
+                <button onClick={()=> {
+                  if(course !== ''){
+                    setShowCourse(true)
+                    setCourse(course)
+                  }
+                  
+                  }} className='py-3 mt-2 px-5 bg-[#115baa] text-white w-[25%] text-[0.75rem] rounded'>Submit</button>
               </div>
             </div>
           </div>

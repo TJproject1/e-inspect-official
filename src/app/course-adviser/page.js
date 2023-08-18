@@ -1,11 +1,19 @@
-import React from 'react'
+"use client"
+
+import React, { useState } from 'react'
 import Image from 'next/image'
 import {CgMenuRight, CgProfile} from 'react-icons/cg'
 import {PiStudent} from 'react-icons/pi'
 import {BsBook} from 'react-icons/bs'
 import {HiMiniUserPlus} from 'react-icons/hi2'
 
+
+
 function CourseAdviserDashboard() {
+  const [showAllCourses, setShowAllCourses] = useState(true)
+  const [showAllStudentsRegistered, setShowAllStudentsRegistered] = useState(false)
+  const [showAddStudentDetails, setShowAddStudentDetails] = useState(false)
+
   return (
     <main  className='bg-[#FEFEFE    w-screen'>
         <div className="header border-b  p-5 border-[#EAEAEA] flex w-full items-center justify-between">
@@ -24,21 +32,33 @@ function CourseAdviserDashboard() {
 
           <div className="scroll-container overflow-auto">
             <div className="course-adviser-actions flex w-[200vw] overflow-x-scroll text-[0.79rem] mt-10">
-                <div className="card1 bg-[#115baa] text-white h-[20vh] w-[55%] flex justify-between px-5 rounded items-center border mr-8">
+                <div onClick={()=> {
+                  setShowAllCourses(true)
+                  setShowAllStudentsRegistered(false)
+                  setShowAddStudentDetails(false)
+                  }} className="card1 bg-[#115baa] text-white h-[20vh] w-[55%] flex justify-between px-5 rounded items-center border mr-8">
                   <div className="justify-self-start text-left">
                     <div className='font-extrabold'>All Courses</div>
                     <div className="font-medium mt-2">10</div>
                   </div>
                   <div className="icon"><PiStudent color='#fff' size={64}/></div>
                 </div>
-                <div className="card2 bg-[#115baa] text-white h-[20vh] w-[55%] flex justify-between px-5 rounded items-center border mr-8">
+                <div onClick={()=> {
+                  setShowAllCourses(false)
+                  setShowAllStudentsRegistered(true)
+                  setShowAddStudentDetails(false)
+                  }} className="card2 bg-[#115baa] text-white h-[20vh] w-[55%] flex justify-between px-5 rounded items-center border mr-8">
                   <div className="justify-self-start text-left">
                     <div className='font-extrabold'>All Students Registered</div>
                     <div className="font-medium mt-2">12,744</div>
                   </div>
                   <div className="icon"><BsBook color='#fff' size={64}/></div>
                 </div>
-                <div className="card3 bg-[#115baa] text-white h-[20vh] w-[55%] flex justify-between px-5 rounded items-center border mr-8">
+                <div onClick={()=> {
+                  setShowAllCourses(false)
+                  setShowAllStudentsRegistered(false)
+                  setShowAddStudentDetails(true)
+                  }} className="card3 bg-[#115baa] text-white h-[20vh] w-[55%] flex justify-between px-5 rounded items-center border mr-8">
                   <div className="justify-self-start text-left">
                     <div className='font-extrabold'>Add Student Details</div>
                     <div className="font-medium mt-2">12,744</div>
@@ -48,7 +68,8 @@ function CourseAdviserDashboard() {
             </div>
           </div>
 
-          {/* <div className="table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20">
+
+          <div  className={`table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20 ${showAllCourses ? '' : 'hidden'}`}>
 
             <div className="flex justify-between items-center ">
               <div className="text-lg">All Courses</div>
@@ -107,9 +128,9 @@ function CourseAdviserDashboard() {
             </div>
            
 
-          </div> */}
+          </div>
 
-          {/* <div className="table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20">
+          <div className={`table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20 ${showAllStudentsRegistered ? '' : 'hidden'}`}>
 
           <div className="flex justify-between items-center ">
             <div className="text-lg">All Registered Students</div>
@@ -168,9 +189,9 @@ function CourseAdviserDashboard() {
           </div>
 
 
-          </div> */}
+          </div>
 
-          <div className="border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-24 text-center p-8">
+          <div className={` ${showAddStudentDetails ? '' : 'hidden'} border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-24 text-center p-8`}>
             <span className="text-sm opacity-40">Click to Scan or Upload picture of a Face</span>
             <Image src={'/images/face-scan.png'} className="w-full h-full" width={100} height={100}/>
           </div>
