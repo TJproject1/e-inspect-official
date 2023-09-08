@@ -1,29 +1,85 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import {CgMenuRight, CgProfile} from 'react-icons/cg'
 import {PiStudent} from 'react-icons/pi'
+import {HiOutlinePencil} from 'react-icons/hi'
+import {MdDeleteOutline} from 'react-icons/md'
 import {BsBook} from 'react-icons/bs'
 import {HiMiniUserPlus} from 'react-icons/hi2'
 
-
+import { useAuth} from "../../../context/AuthContext";
+import {useRouter} from "next/navigation"
+import { doc, setDoc } from "firebase/firestore"
+import { db } from '../../../firebase'
+import useFetchCourses from '../../../hooks/fetchCourses'
 
 function CourseAdviserDashboard() {
   const [showAllCourses, setShowAllCourses] = useState(true)
   const [showAllStudentsRegistered, setShowAllStudentsRegistered] = useState(false)
   const [showAddStudentDetails, setShowAddStudentDetails] = useState(false)
 
+  const { courses, loading, error } = useFetchCourses()
+  console.log(courses)
+
+  const [edit, setEdit] = useState(false)
+  const [editedCourse, setEditedCourse] = useState({
+    courseName:null,
+    courseCode:null,
+  })
+
+  // const [courseList, setCourseList] = useState([])
+  // const [addCourses, setAddCourses] = useState(false)
+  const [noOfStudentsRegistered, setNoOfStudentsRegistered] = useState(0)
+  const [course, setCourse] = useState({
+    courseName: null,
+    courseCode: null,
+    noOfStudentsRegistered: noOfStudentsRegistered,
+  })
+  
+
+  console.log(courses)
+
+  
+  
+  
+  const router = useRouter()
+  const { logout, currentUser, userInfo } = useAuth()
+
+  async function handleAddCourse() {
+    if (!course) {return}
+    courses.push(course)
+    // setCourses(courseList)
+    setCourse({
+      ...course,
+      courseName:'',
+      courseCode:'',
+      noOfStudentsRegistered: noOfStudentsRegistered,})
+
+      const userRef = doc(db, 'users', currentUser.uid)
+      await setDoc(userRef, {
+        'courses': courses
+      }, {merge:true})
+  }
   return (
-    <main  className='bg-[#FEFEFE    w-screen'>
+    <div className="">
+      { 
+      (userInfo && !loading) && (
+        <>
+          
+          <main  className='bg-[#FEFEFE    w-screen'>
         <div className="header border-b  p-5 border-[#EAEAEA] flex w-full items-center justify-between">
             <div className=" bg-[#FEFEFE]  text-[#3a3a3a] w-full border-[#EAEAEA]">
                 <Image className='w-[20%]' width={200} height={100} src={"/images/pi2.png"}/>
             </div>
-            <div className=" mr-3 rounded-full overflow-hidden">
+            {/* <div className=" mr-3 rounded-full overflow-hidden">
               <Image src={"/images/avatar.jpg"} width={64} height={64} className='w-full h-full'/>
-            </div>
-            <div className=""><CgMenuRight color='#000' size={36}/></div>
+            </div> */}
+            <div onClick={()=> {
+              logout()
+              router.push('/')
+            }} className="">Logout</div>
         </div>
 
         <section id="course-adviser-dashboard" className='px-5'>
@@ -68,70 +124,177 @@ function CourseAdviserDashboard() {
             </div>
           </div>
 
+          {
+            showAllCourses && (
+                  <>
+                    <div className=" mt-10">
+                      <input onChange={(e)=> setCourse({
+                        ...course,
+                        courseCode: e.target.value,
+                      })} name='courseCode' value={course.courseCode} className='p-4 border rounded w-full' type="text" placeholder='ENTER COURSE CODE e.g MTH317' />
+                      <input onChange={(e)=> setCourse({
+                        ...course,
+                        courseName: e.target.value
+                      })} name='courseName' value={course.courseName} className='p-4 border rounded w-full' type="text" placeholder='ENTER COURSE NAME e.g LINEAR ALGEBRA' />
+                      
+                      <div onClick={handleAddCourse} className="w-[35%] text-sm mt-5 rounded text-white text-center py-4 bg-[#115baa]">Add Course</div>
+                      
+                    </div>
+                    
+                    {
+                      !edit ? null : (
+                        <div className=" mt-10">
+                          <input onChange={(e)=> setEditedCourse({
+                            ...course,
+                            courseCode: e.target.value,
+                          })} name='courseCode' value={editedCourse.courseCode} className='p-4 border rounded w-full' type="text" placeholder='ENTER COURSE CODE e.g MTH317' />
+                          <input onChange={(e)=> setEditedCourse({
+                            ...course,
+                            courseName: e.target.value
+                          })} name='courseName' value={editedCourse.courseName} className='p-4 border rounded w-full' type="text" placeholder='ENTER COURSE NAME e.g LINEAR ALGEBRA' />
+                          
+                          <div onClick={handleAddCourse} className="w-[35%] text-sm mt-5 rounded text-white text-center py-4 bg-[#115baa]">Add Course</div>
+                        </div>
+                      )
+                    }
 
-          <div  className={`table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20 ${showAllCourses ? '' : 'hidden'}`}>
+                    <div  className={`table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20 `}>
+    
+                      <div className="flex justify-between items-center ">
+                        <div className="text-lg">All Courses</div>
+                        <div className="text-[0.65rem] opacity-80">Show All</div>
+                      </div>
+                      
+                      <div className="w-full overflow-auto">
+                        <table className='text-[0.65rem] overflow-scroll  mt-4 w-[220%] text-center'>
+                          <thead>
+                          <tr className='opacity-50 '>
+                            <th>S/N</th>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>No Of Students Registered</th>
+                            <th></th>
+                          </tr>
+                          </thead>
+                          <tbody className='relative'>
+                            {(userInfo && loading) && (<div>
+                              Loading...
+                            </div>)}
+                                {courses.map((course,i) => {
+                                  return (
+                                    
+                                    <tr className="" key={i}>
+                                      
+                                      <td>{i+1}</td>
+                                      <td>{course.courseCode}</td>
+                                      <td>{course.courseName}</td>
+                                      <td>{course.noOfStudentsRegistered}</td>
+                                      <div className='flex justify-center items-center mt-4'>
+                                      <div onClick={() => setEdit(true)} className="mr-8 opacity-50">
+                                        <HiOutlinePencil size={18} color={"#000000"}/>
+                                      </div>
+                                      <div className="opacity-50">
+                                        <MdDeleteOutline size={18} color={"#000000"}/>
+                                      </div>
+                                    </div>
+                                    </tr>
+                                  )
+                                })}
+                            <tr>
+                              <td>2</td>
+                              <td>MTH317</td>
+                              <td>Linear Algebra</td>
+                              <td>200</td>
+                              <td>
+                        <div className='flex justify-center items-center mt-4'>
+                          <div className="mr-8 opacity-50">
+                            <HiOutlinePencil size={18} color={"#000000"}/>
+                          </div>
+                          <div className="opacity-50">
+                            <MdDeleteOutline size={18} color={"#000000"}/>
+                          </div>
+                        </div>
+                      </td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+                              <td>MTH317</td>
+                              <td>Linear Algebra</td>
+                              <td>200</td>
+                              <td>
+                        <div className='flex justify-center items-center mt-4'>
+                          <div className="mr-8 opacity-50">
+                            <HiOutlinePencil size={18} color={"#000000"}/>
+                          </div>
+                          <div className="opacity-50">
+                            <MdDeleteOutline size={18} color={"#000000"}/>
+                          </div>
+                        </div>
+                      </td>
+                            </tr>
+                            <tr>
+                              <td>3</td>
+                              <td>MTH317</td>
+                              <td>Linear Algebra</td>
+                              <td>200</td>
+                              <td>
+                        <div className='flex justify-center items-center mt-4'>
+                          <div className="mr-8 opacity-50">
+                            <HiOutlinePencil size={18} color={"#000000"}/>
+                          </div>
+                          <div className="opacity-50">
+                            <MdDeleteOutline size={18} color={"#000000"}/>
+                          </div>
+                        </div>
+                      </td>
+                            </tr>
+                            <tr>
+                              <td>4</td>
+                              <td>MTH317</td>
+                              <td>Linear Algebra</td>
+                              <td>200</td>
+                              <td>
+                        <div className='flex justify-center items-center mt-4'>
+                          <div className="mr-8 opacity-50">
+                            <HiOutlinePencil size={18} color={"#000000"}/>
+                          </div>
+                          <div className="opacity-50">
+                            <MdDeleteOutline size={18} color={"#000000"}/>
+                          </div>
+                        </div>
+                      </td>
+                            </tr>
+                            <tr>
+                              <td>5</td>
+                              <td>MTH317</td>
+                              <td>Linear Algebra</td>
+                              <td>200</td>
+                              <td>
+                        <div className='flex justify-center items-center mt-4'>
+                          <div className="mr-8 opacity-50">
+                            <HiOutlinePencil size={18} color={"#000000"}/>
+                          </div>
+                          <div className="opacity-50">
+                            <MdDeleteOutline size={18} color={"#000000"}/>
+                          </div>
+                        </div>
+                      </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    
+    
+                    </div>
+                  </>
+                )
+          }
 
-            <div className="flex justify-between items-center ">
-              <div className="text-lg">All Courses</div>
-              <div className="text-[0.65rem] opacity-80">Show All</div>
-            </div>
             
-            <div className="w-full overflow-auto">
-              <table className='text-[0.65rem] overflow-scroll  mt-4 w-[220%] text-center'>
-                <thead>
-                <tr className='opacity-50 '>
-                  <th>S/N</th>
-                  <th>Course Code</th>
-                  <th>Course Name</th>
-                  <th>No Of Students Registered</th>
-                  <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-           
-
-          </div>
+          
 
           <div className={`table  overflow-hidden mt-10 w-full border rounded py-6 px-5 mb-20 ${showAllStudentsRegistered ? '' : 'hidden'}`}>
-
+          
           <div className="flex justify-between items-center ">
             <div className="text-lg">All Registered Students</div>
             <div className="text-[0.65rem] opacity-80">Show All</div>
@@ -154,35 +317,80 @@ function CourseAdviserDashboard() {
                   <td>PSC18809922</td>
                   <td>Thomas Johnson</td>
                   <td>9</td>
-                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                  <td>
+                    <div className='flex justify-center items-center mt-4'>
+                      <div className="mr-8 opacity-50">
+                        <HiOutlinePencil size={18} color={"#000000"}/>
+                      </div>
+                      <div className="opacity-50">
+                        <MdDeleteOutline size={18} color={"#000000"}/>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td>2</td>
                   <td>PSC1909234</td>
                   <td>David Uwasota</td>
                   <td>10</td>
-                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                  <td>
+                    <div className='flex justify-center items-center mt-4'>
+                      <div className="mr-8 opacity-50">
+                        <HiOutlinePencil size={18} color={"#000000"}/>
+                      </div>
+                      <div className="opacity-50">
+                        <MdDeleteOutline size={18} color={"#000000"}/>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td>3</td>
                   <td>PSC1809292</td>
                   <td>Jane Williams</td>
                   <td>10</td>
-                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                  <td>
+                    <div className='flex justify-center items-center mt-4'>
+                      <div className="mr-8 opacity-50">
+                        <HiOutlinePencil size={18} color={"#000000"}/>
+                      </div>
+                      <div className="opacity-50">
+                        <MdDeleteOutline size={18} color={"#000000"}/>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td>4</td>
                   <td>PSC1808945</td>
                   <td>Tobi Michaels</td>
                   <td>11</td>
-                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                  <td>
+                    <div className='flex justify-center items-center mt-4'>
+                      <div className="mr-8 opacity-50">
+                        <HiOutlinePencil size={18} color={"#000000"}/>
+                      </div>
+                      <div className="opacity-50">
+                        <MdDeleteOutline size={18} color={"#000000"}/>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td>5</td>
                   <td>PSC1802238</td>
                   <td>Jennifer Aworika</td>
                   <td>8</td>
-                  <td><button className='border py-2 px-4 rounded m-2 text-center'>View More</button></td>
+                  <td>
+                    <div className='flex justify-center items-center mt-4'>
+                      <div className="mr-8 opacity-50">
+                        <HiOutlinePencil size={18} color={"#000000"}/>
+                      </div>
+                      <div className="opacity-50">
+                        <MdDeleteOutline size={18} color={"#000000"}/>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -190,16 +398,34 @@ function CourseAdviserDashboard() {
 
 
           </div>
+          {
+            showAddStudentDetails ? (
+              <div className="w-full mb-24">
+                <div className={`  border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-10 text-center p-8`}>
+                  <span className="text-sm opacity-40">Click to Scan or Upload picture of a Face</span>
+                  <Image src={'/images/face-scan.png'} className="w-full h-full" width={100} height={100}/>
+                </div>
+                <div className="inpt-grp">
+                  <input type="text" className="my-4 p-5 border rounded w-full" placeholder="Enter Student's Name" />
+                  <input type="text" className="my-4 p-5 border rounded w-full" placeholder="Enter Matriculation Number" />
+                  <textarea className="my-4 p-5 border rounded w-full" placeholder="Courses offered(separate with comma) e.g MTH317,CSC111,..."  rows={5}></textarea>
+                  <button className='w-full rounded mt-6 bg-[#115baa] text-white text-sm py-3 px-5'>Register Student</button>
+                <div className="success text-green-950 bg-green-200 w-full mt-5 p-4">Uploaded successfuly</div>
+                </div>
+              </div>
+            ): null
+          }
 
-          <div className={` ${showAddStudentDetails ? '' : 'hidden'} border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-24 text-center p-8`}>
-            <span className="text-sm opacity-40">Click to Scan or Upload picture of a Face</span>
-            <Image src={'/images/face-scan.png'} className="w-full h-full" width={100} height={100}/>
-          </div>
         </section>
 
         
 
     </main>
+        </>
+      )
+    }
+    </div>
+    
   )
 }
 

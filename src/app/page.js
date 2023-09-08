@@ -1,9 +1,38 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+
+  const { login, currentUser } = useAuth()
+
+  console.log(currentUser)
+
+  const router = useRouter()
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    if(!email || !password) {
+      setError('Please Enter email and password')
+      return
+    }
+    try {
+      await login(email, password)
+      router.push('/course-adviser')
+    } catch(err) {
+      setError('Incorrect email or password')
+    }
+  }
+
   return (
     <main className="app">
+      { currentUser ? router.push('/course-adviser') : (
       <div className=" w-full flex flex-col items-center mx-auto">
         <div className="logo w-[186px] mt-16 my-8">
           <Image
@@ -17,12 +46,15 @@ export default function Home() {
           Integrity in school assessments...
         </div>
 
-        <div className="form mt-16 w-[85%] mx-auto ">
+        <form onSubmit={(e) => handleLogin(e)} className="form mt-16 w-[85%] mx-auto ">
           <div className="input-grp mb-8">
             {/* <label className='font-bold' htmlFor="">Email Address</label> */}
             <input
               placeholder="Email Address"
               type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-[#3a3a3a] px-5 py-4 rounded"
             />
           </div>
@@ -31,9 +63,12 @@ export default function Home() {
             <input
               placeholder="Password"
               type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full border border-[#3a3a3a] px-5 py-4 rounded"
             />
-            <button className="w-full mt-8 font-semibold bg-[#115baa] text-white p-4 text-lg text-center rounded">
+            <button type='submit' className="w-full mt-8 font-semibold bg-[#115baa] text-white p-4 text-lg text-center rounded">
               Login
             </button>
             {/* <button className="w-full border-[#3a3a3a] border mt-4 bg-[transparent] font-semibold text-[#3a3a3a] p-4 text-lg text-center rounded flex items-center justify-center">
@@ -49,9 +84,10 @@ export default function Home() {
             </button> */}
           </div>
 
-        </div>
+        </form>
         <div className="w-full text-center text-[#3a3a3a] mt-16"><Link href="/register">Don't have an account yet? <span className="text-[#115baa]">Register</span></Link></div>
       </div>
+      )}
     </main>
   );
 }
