@@ -23,14 +23,15 @@ function CourseAdviserDashboard() {
   const { courses, loading, error } = useFetchCourses()
   console.log(courses)
 
-  const [edit, setEdit] = useState(false)
+  const [edit, setEdit] = useState(null)
   const [editedCourse, setEditedCourse] = useState({
     courseName:null,
     courseCode:null,
   })
+  const [courseIndex, setCourseIndex] = useState(null)
 
   // const [courseList, setCourseList] = useState([])
-  // const [addCourses, setAddCourses] = useState(false)
+  // const [addCourses, setAddC///ourses] = useState(false)
   const [noOfStudentsRegistered, setNoOfStudentsRegistered] = useState(0)
   const [course, setCourse] = useState({
     courseName: null,
@@ -62,6 +63,16 @@ function CourseAdviserDashboard() {
         'courses': courses
       }, {merge:true})
   }
+
+  function handleAddEdit(courseKey) {
+    return () => {
+      setEdit(courseKey)
+      setEditedCourse({
+        ...course,
+      })
+    }
+  }
+
   return (
     <div className="">
       { 
@@ -142,7 +153,7 @@ function CourseAdviserDashboard() {
                     </div>
                     
                     {
-                      !edit ? null : (
+                      !(edit === courseKey) ? null : (
                         <div className=" mt-10">
                           <input onChange={(e)=> setEditedCourse({
                             ...course,
@@ -153,7 +164,7 @@ function CourseAdviserDashboard() {
                             courseName: e.target.value
                           })} name='courseName' value={editedCourse.courseName} className='p-4 border rounded w-full' type="text" placeholder='ENTER COURSE NAME e.g LINEAR ALGEBRA' />
                           
-                          <div onClick={handleAddCourse} className="w-[35%] text-sm mt-5 rounded text-white text-center py-4 bg-[#115baa]">Add Course</div>
+                          <div onClick={handleAddEdit(courseKey)} className="w-[35%] text-sm mt-5 rounded text-white text-center py-4 bg-[#115baa]">Add Course</div>
                         </div>
                       )
                     }
@@ -181,6 +192,7 @@ function CourseAdviserDashboard() {
                               Loading...
                             </div>)}
                                 {courses.map((course,i) => {
+                                  setCourseIndex(i)
                                   return (
                                     
                                     <tr className="" key={i}>
