@@ -1,36 +1,43 @@
-"use client";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
-import { useAuth } from "../context/AuthContext";
 
-function fetchCourses() {
+function useFetchCourses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [courses, setCourses] = useState([]);
 
-  const { currentUser } = useAuth();
+  const [revalidate, setRevalidate] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
       try {
-        const docRef = doc(db, "users", currentUser.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setCourses(docSnap.data().courses);
-        }
+        const querySnapshot = await getDocs(collection(db, "courses"));
+        const data = [];
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          data.push({ ...doc.data(), id: doc.id });
+        });
+
+        setCourses(data);
       } catch (err) {
         setError("failed to load courses");
       } finally {
         setLoading(false);
+        setRevalidate(false);
       }
     }
-    fetchData();
-  }, []);
+    if (revalidate || courses?.length === 0) {
+      fetchData();
+    }
+  }, [revalidate]);
+
   return {
     loading,
     error,
     courses,
+    setRevalidate,
   };
 }
 
-export default fetchCourses;
+export default useFetchCourses;
