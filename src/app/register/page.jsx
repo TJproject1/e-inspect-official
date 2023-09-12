@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
+import { ImSpinner } from "react-icons/im";
 
 export default function Register() {
   const router = useRouter();
@@ -34,7 +35,11 @@ export default function Register() {
   }, [currentUser]);
 
   if (currentUser) {
-    return;
+    return (
+      <div className="grid w-full h-screen place-content-center">
+        <ImSpinner className="w-8 h-8 text-[#115baa] mx-auto animate-spin" />
+      </div>
+    );
   }
 
   const submitHandler = (e) => {

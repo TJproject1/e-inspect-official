@@ -1,22 +1,25 @@
 "use client";
 
+import { useLogout } from "@/hooks/useLogout";
 import Image from "next/image";
 import React, { useState } from "react";
-import { CgMenuRight } from "react-icons/cg";
-import { FaUserCircle } from "react-icons/fa";
 
 function ExamInvigilator() {
   const [course, setCourse] = useState("");
   const [showCourse, setShowCourse] = useState(false);
+  const { handleLogout } = useLogout();
+
   return (
     <main className="bg-[#FEFEFE   w-screen">
       <div className="header border-b  p-5 lg:px-16 border-[#EAEAEA] flex w-full items-center justify-between">
         <div className=" bg-[#FEFEFE]  text-[#3a3a3a] border-[#EAEAEA]">
           <Image width={50} height={50} src={"/images/pi2.png"} alt="logo" />
         </div>
-        <button className="flex items-center space-x-3 text-[#115baa]">
-          <FaUserCircle size={32} className="" />
-          <CgMenuRight size={32} />
+        <button
+          onClick={handleLogout}
+          className="text-white text-sm text-center py-2 px-5 font-medium bg-[#115baa]"
+        >
+          Logout
         </button>
       </div>
 

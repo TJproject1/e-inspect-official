@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ImSpinner } from "react-icons/im";
 
 export default function Home() {
   const router = useRouter();
@@ -29,7 +30,11 @@ export default function Home() {
   }, [currentUser]);
 
   if (currentUser) {
-    return;
+    return (
+      <div className="grid w-full h-screen place-content-center">
+        <ImSpinner className="w-8 h-8 text-[#115baa] mx-auto animate-spin" />
+      </div>
+    );
   }
 
   const submitHandler = (e) => {

@@ -95,9 +95,7 @@ function CourseAdviserDashboard() {
               {/* <div className="mr-3 overflow-hidden rounded-full ">
               <Image src={"/images/avatar.jpg"} width={64} height={64} className='w-full h-full'/>
             </div> */}
-              <button onClick={handleLogout} className="">
-                Logout
-              </button>
+              <button onClick={handleLogout}>Logout</button>
             </div>
 
             <section id="course-adviser-dashboard" className="px-5 lg:px-16">
