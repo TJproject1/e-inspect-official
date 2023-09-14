@@ -50,49 +50,53 @@ function StudentsTable({ students, revalidate, loading, handleEdit }) {
         }}
       />
       {loading && <span className="block my-3 text-sm">Loading...</span>}
-      <table className="w-full mt-4 overflow-scroll text-center">
-        <thead>
-          <tr className="text-sm opacity-50">
-            <th>S/N</th>
-            <th>Mat No</th>
-            <th>Name</th>
-            <th>No Of Students Registered</th>
-          </tr>
-        </thead>
-        <tbody className="text-xs">
-          {students.map((student, index) => (
-            <tr key={student.id}>
-              <td>{index + 1}</td>
-              <td>{student?.mat_no}</td>
-              <td>{student?.name}</td>
-              <td>{student?.courses?.length ?? 0}</td>
-              <td>
-                <span className="flex items-center justify-center mt-4">
-                  <HiOutlinePencil
-                    size={18}
-                    color={"#000000"}
-                    onClick={() => handleEdit(student)}
-                    className="mr-8 opacity-50"
-                    role="button"
-                  />
-
-                  {isLoading && studentId === student?.id ? (
-                    <ImSpinner size={18} className="animate-spin" />
-                  ) : (
-                    <MdDeleteOutline
+      {students.length > 0 ? (
+        <table className="w-full mt-4 overflow-scroll text-center">
+          <thead>
+            <tr className="text-sm opacity-50">
+              <th>S/N</th>
+              <th>Mat No</th>
+              <th>Name</th>
+              <th>No Of Students Registered</th>
+            </tr>
+          </thead>
+          <tbody className="text-xs">
+            {students.map((student, index) => (
+              <tr key={student.id}>
+                <td>{index + 1}</td>
+                <td>{student?.mat_no}</td>
+                <td>{student?.name}</td>
+                <td>{student?.courses?.length ?? 0}</td>
+                <td>
+                  <span className="flex items-center justify-center mt-4">
+                    <HiOutlinePencil
                       size={18}
                       color={"#000000"}
-                      className="opacity-50"
+                      onClick={() => handleEdit(student)}
+                      className="mr-8 opacity-50"
                       role="button"
-                      onClick={() => handleDelete(student?.id)}
                     />
-                  )}
-                </span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+                    {isLoading && studentId === student?.id ? (
+                      <ImSpinner size={18} className="animate-spin" />
+                    ) : (
+                      <MdDeleteOutline
+                        size={18}
+                        color={"#000000"}
+                        className="opacity-50"
+                        role="button"
+                        onClick={() => handleDelete(student?.id)}
+                      />
+                    )}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="mt-4 text-sm font-medium">No student registered</p>
+      )}
     </div>
   );
 }
