@@ -68,7 +68,7 @@ const AddCourseForm = ({ edit, courseToEdit, editDone, revalidate }) => {
     const coursesRef = collection(db, "courses");
 
     try {
-      await setDoc(doc(coursesRef), {
+      await setDoc(doc(coursesRef, course.courseCode), {
         ...course,
       });
       revalidate();
