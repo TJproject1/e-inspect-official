@@ -11,6 +11,7 @@ import AddStudentForm from "@/components/AddStudentForm";
 import CoursesTable from "@/components/CoursesTable";
 import StudentsTable from "@/components/StudentsTable";
 import useFetchCourses from "@/hooks/fetchCourses";
+import useFetchStudents from "@/hooks/useFetchStudents";
 import { useLogout } from "@/hooks/useLogout";
 
 function CourseAdviserDashboard() {
@@ -48,6 +49,49 @@ function CourseAdviserDashboard() {
       courseCode: "",
       id: "",
     });
+  };
+
+  const {
+    setRevalidate: setRevalidateStudent,
+    students,
+    loading: gettingStudents,
+    error: failedToGetStudent,
+  } = useFetchStudents();
+
+  const [editStudent, setEditStudent] = useState(null);
+  const [editedStudent, setEditedStudent] = useState({
+    name: "",
+    mat_no: "",
+    courses: [],
+    id: "",
+  });
+
+  const studentEditDone = () => {
+    setEdit(false);
+    setShowAllCourses(false);
+    setShowAllStudentsRegistered(true);
+    setShowAddStudentDetails(false);
+    setEditedStudent({
+      name: "",
+      mat_no: "",
+      courses: [],
+      id: "",
+    });
+  };
+
+  const handleStudentEdit = (student) => {
+    setEditStudent(true);
+    setShowAllCourses(false);
+    setShowAllStudentsRegistered(false);
+    setShowAddStudentDetails(true);
+    setEditedStudent(student);
+    if (typeof window !== "undefined") {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
@@ -100,7 +144,7 @@ function CourseAdviserDashboard() {
           >
             <div className="text-left justify-self-start">
               <div className="font-extrabold">All Students Registered</div>
-              <div className="mt-2 font-medium">12,744</div>
+              <div className="mt-2 font-medium">{students?.length}</div>
             </div>
             <div className="icon">
               <BsBook color="#fff" size={64} />
@@ -158,9 +202,22 @@ function CourseAdviserDashboard() {
             {/* <div className="text-[0.65rem] opacity-80">Show All</div> */}
           </div>
 
-          <StudentsTable />
+          <StudentsTable
+            students={students}
+            loading={gettingStudents}
+            error={failedToGetStudent}
+            handleEdit={handleStudentEdit}
+            revalidate={() => setRevalidateStudent(true)}
+          />
         </div>
-        {showAddStudentDetails ? <AddStudentForm /> : null}
+        {showAddStudentDetails ? (
+          <AddStudentForm
+            edit={editStudent}
+            studentToEdit={editedStudent}
+            editDone={studentEditDone}
+            revalidate={() => setRevalidateStudent(true)}
+          />
+        ) : null}
       </section>
     </main>
   );

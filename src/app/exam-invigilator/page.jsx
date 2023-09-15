@@ -1,13 +1,18 @@
 "use client";
 
+import { PrimaryButton } from "@/components/Buttons";
+import ToastNotification from "@/components/ToastNotification";
+import useCourseChecker from "@/hooks/useCourseChecker";
 import { useLogout } from "@/hooks/useLogout";
 import Image from "next/image";
 import React, { useState } from "react";
 
 function ExamInvigilator() {
-  const [course, setCourse] = useState("");
-  const [showCourse, setShowCourse] = useState(false);
+  const [courseCode, setCourseCode] = useState("");
   const { handleLogout } = useLogout();
+  const { loading, error, validCourseCode, course } = useCourseChecker();
+
+  const [studentIsRegistered, setStudentIsRegistered] = useState(false);
 
   return (
     <main className="bg-[#FEFEFE   w-screen">
@@ -30,188 +35,90 @@ function ExamInvigilator() {
         </div>
 
         <div className="">
-          <div className="mt-12 inputgrp">
-            <label htmlFor="" className="text-[0.79rem] font-bold ">
-              Current Course Exam Being Invigilated
-            </label>
-            {/* to be used when submit button is clicked */}
+          <div className="mt-12">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                validCourseCode(courseCode);
+              }}
+            >
+              <label
+                htmlFor="code"
+                className="text-[0.79rem] mb-2 font-bold block"
+              >
+                Current Course Exam Being Invigilated
+              </label>
+              <ToastNotification
+                message={error}
+                type={"error"}
+                style={{
+                  margin: "0",
+                }}
+              />
+              {/* to be used when submit button is clicked */}
+              <div className="flex items-center justify-between w-full h-full mt-2">
+                <input
+                  onChange={(e) => setCourseCode(e.target.value)}
+                  type="text"
+                  name="code"
+                  id="code"
+                  value={courseCode}
+                  placeholder="Course Code: e.g MTH317"
+                  className={`border w-[70%] py-3 text-sm px-4 rounded mt-2`}
+                  required
+                />
+                <PrimaryButton
+                  loading={loading}
+                  disabled={loading}
+                  type="submit"
+                  className="py-3 mt-2 px-5 bg-[#115baa] text-white w-[25%] text-[0.75rem] rounded"
+                  text="Validate"
+                />
+              </div>
+            </form>
             <div
               className={`font-bold text-lg text-center mt-4 text-[#115baa] ${
-                showCourse ? "" : "hidden"
+                course !== null ? "" : "hidden"
               }`}
             >
-              {course}
-            </div>
-            <div className="flex items-center justify-between w-full h-full">
-              <input
-                onChange={(e) => setCourse(e.target.value)}
-                type="text"
-                placeholder="Course Code: e.g MTH317"
-                className={`border w-[70%] py-3 text-sm px-4 rounded mt-2 `}
-              />
-              <button
-                onClick={() => {
-                  if (course !== "") {
-                    setShowCourse(true);
-                    setCourse(course);
-                  }
-                }}
-                className="py-3 mt-2 px-5 bg-[#115baa] text-white w-[25%] text-[0.75rem] rounded"
-              >
-                Submit
-              </button>
+              <h3 className="mb-2">Course: {course?.courseName}</h3>
+              <h3>Course Code: {course?.courseCode}</h3>
             </div>
           </div>
         </div>
 
-        {/* <div className="table w-full px-5 py-6 mt-10 mb-20 overflow-hidden border rounded">
-
-            <div className="flex items-center justify-between ">
-              <div className="text-lg">All Courses</div>
-              <div className="text-[0.65rem] opacity-80">Show All</div>
+        {studentIsRegistered && (
+          <div className="mt-8 authorized">
+            <div className="positive flex text-[#115baa] font-semibold">
+              Student is eligible for the Exam{" "}
+              <span className="ml-4">
+                <Image
+                  src={"/images/check.png"}
+                  width={24}
+                  height={24}
+                  className="w-[24px] h-[24px]"
+                  alt="check"
+                />
+              </span>
             </div>
-            
-            <div className="w-full overflow-auto">
-              <table className='text-[0.65rem] overflow-scroll  mt-4 w-[220%] text-center'>
-                <thead>
-                <tr className='opacity-50 '>
-                  <th>S/N</th>
-                  <th>Course Code</th>
-                  <th>Course Name</th>
-                  <th>No Of Students Registered</th>
-                  <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                    <td>MTH317</td>
-                    <td>Linear Algebra</td>
-                    <td>200</td>
-                    <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-           
-
-          </div> */}
-
-        {/* <div className="table w-full px-5 py-6 mt-10 mb-20 overflow-hidden border rounded">
-
-          <div className="flex items-center justify-between ">
-            <div className="text-lg">All Registered Students</div>
-            <div className="text-[0.65rem] opacity-80">Show All</div>
+            {/* <div className="negative flex text-[#aa2d11] font-semibold">Student is not eligible for the Exam <span className='ml-2 '><Image src={"/images/delete.png"} width={24} height={24} className="w-[24px] h-[24px]"/></span></div> */}
           </div>
+        )}
 
-          <div className="w-full overflow-auto">
-            <table className='text-[0.65rem] overflow-scroll  mt-4 w-[220%] text-center'>
-              <thead>
-              <tr className='opacity-50 '>
-                <th>S/N</th>
-                <th>Mat No</th>
-                <th>Name</th>
-                <th>No Of Courses Registered</th>
-                <th></th>
-              </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>PSC18809922</td>
-                  <td>Thomas Johnson</td>
-                  <td>9</td>
-                  <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>PSC1909234</td>
-                  <td>David Uwasota</td>
-                  <td>10</td>
-                  <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>PSC1809292</td>
-                  <td>Jane Williams</td>
-                  <td>10</td>
-                  <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>PSC1808945</td>
-                  <td>Tobi Michaels</td>
-                  <td>11</td>
-                  <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                </tr>
-                <tr>
-                  <td>5</td>
-                  <td>PSC1802238</td>
-                  <td>Jennifer Aworika</td>
-                  <td>8</td>
-                  <td><button className='px-4 py-2 m-2 text-center border rounded'>View More</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-
-          </div> */}
-
-        <div className="mt-8 authorized">
-          <div className="positive flex text-[#115baa] font-semibold">
-            Student is eligible for the Exam{" "}
-            <span className="ml-4">
-              <Image
-                src={"/images/check.png"}
-                width={24}
-                height={24}
-                className="w-[24px] h-[24px]"
-                alt="check"
-              />
+        {course && (
+          <div className="cursor-pointer border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-24 text-center p-8">
+            <span className="text-sm opacity-40">
+              Click to Scan before entry
             </span>
+            <Image
+              src={"/images/face-scan.png"}
+              width={200}
+              height={200}
+              alt="face"
+              className="mx-auto"
+            />
           </div>
-          {/* <div className="negative flex text-[#aa2d11] font-semibold">Student is not eligible for the Exam <span className='ml-2 '><Image src={"/images/delete.png"} width={24} height={24} className="w-[24px] h-[24px]"/></span></div> */}
-        </div>
-
-        <div className="border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-24 text-center p-8">
-          <span className="text-sm opacity-40">Click to Scan before entry</span>
-          <Image
-            src={"/images/face-scan.png"}
-            width={200}
-            height={200}
-            alt="face"
-            className="mx-auto"
-          />
-        </div>
+        )}
       </section>
     </main>
   );
