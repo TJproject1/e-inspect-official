@@ -13,8 +13,8 @@ const useStudentValidator = () => {
       const q = query(
         collection(db, "students"),
 
-        where("courses", "array-contains", code)
-        // where("mat_no", "==", mat_no)
+        where("courses", "array-contains", code),
+        where("mat_no", "==", mat_no)
       );
 
       const querySnapshot = await getDocs(q);

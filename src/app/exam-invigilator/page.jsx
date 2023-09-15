@@ -11,7 +11,7 @@ import React, { useState } from "react";
 
 function ExamInvigilator() {
   const [courseCode, setCourseCode] = useState("");
-  // const [mat_no, setMatNo] = useState("");
+  const [mat_no, setMatNo] = useState("");
   const { handleLogout } = useLogout();
   const { loading, error, validCourseCode, course } = useCourseChecker();
 
@@ -126,7 +126,7 @@ function ExamInvigilator() {
         )}
 
         {/* remove this to remove mat no */}
-        {/* {course && (
+        {course && (
           <div className="w-full px-3 mx-auto lg:max-w-xl">
             <input
               onChange={(e) => setMatNo(e.target.value)}
@@ -139,9 +139,9 @@ function ExamInvigilator() {
               required
             />
           </div>
-        )} */}
+        )}
 
-        {course && (
+        {course && mat_no && (
           <div className="mt-10 mb-20">
             <div
               className="mx-auto mb-20 w-fit"
@@ -157,7 +157,9 @@ function ExamInvigilator() {
                   text="Validate"
                   loading={validating}
                   disabled={validating}
-                  onClick={() => validateStudent(detections[0], courseCode)}
+                  onClick={() =>
+                    validateStudent(detections[0], courseCode, mat_no)
+                  }
                   className="px-6 py-3 mx-auto text-lg font-semibold text-center text-white bg-green-500 rounded w-fit"
                 />
                 <PrimaryButton
