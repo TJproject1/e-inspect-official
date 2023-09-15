@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "face-api.js": "^0.22.2",
     "firebase": "^10.3.0",
     "next": "13.4.12",
     "react": "18.2.0",

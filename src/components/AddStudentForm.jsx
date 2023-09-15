@@ -1,8 +1,8 @@
 import { collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { PrimaryButton } from "./Buttons";
-import FaceRecognition from "./FacialRecognition";
 import { TextInput } from "./Inputs";
 import ToastNotification from "./ToastNotification";
 
@@ -15,8 +15,6 @@ function AddStudentForm({ edit, studentToEdit, editDone, revalidate }) {
     mat_no: "",
     courses: [],
   });
-
-  const [detections, setDetections] = useState([]);
 
   useEffect(() => {
     if (edit) {
@@ -72,9 +70,8 @@ function AddStudentForm({ edit, studentToEdit, editDone, revalidate }) {
     const studentsRef = collection(db, "students");
 
     try {
-      await setDoc(doc(studentsRef, student?.mat_no), {
+      await setDoc(doc(studentsRef), {
         ...student,
-        descriptor: JSON.stringify(detections),
       });
       revalidate();
       setLoading(false);
@@ -101,30 +98,20 @@ function AddStudentForm({ edit, studentToEdit, editDone, revalidate }) {
 
   return (
     <div className="w-full mb-24">
-      {!edit && (
-        <div className={`mt-10`}>
-          <div
-            className="mx-auto mb-20 w-fit"
-            style={{
-              display: detections?.length === 0 ? "none" : "block",
-            }}
-          >
-            <h2 className="text-lg font-semibold text-center">Face Detected</h2>
-            <PrimaryButton
-              text="Re-scan"
-              onClick={() => setDetections([])}
-              className="w-fit mx-auto mt-3 font-semibold bg-[#115baa] text-white py-3 px-6 text-lg text-center rounded"
-            />
-          </div>
-          <div
-            style={{
-              display: detections?.length > 0 ? "none" : "block",
-            }}
-          >
-            <FaceRecognition setDetections={setDetections} />
-          </div>
-        </div>
-      )}
+      <div
+        className={`cursor-pointer border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-10 text-center p-8`}
+      >
+        <span className="text-sm opacity-40">
+          Click to Scan or Upload picture of a Face
+        </span>
+        <Image
+          src={"/images/face-scan.png"}
+          className="mx-auto"
+          width={200}
+          height={200}
+          alt="scan"
+        />
+      </div>
       <form onSubmit={handleAddStudent} className="mx-auto lg:max-w-2xl">
         <h2 className="mb-4 text-base font-semibold text-center lg:text-lg">
           {edit ? `Update ${studentToEdit?.name}'s profile` : "Add Student"}
@@ -181,7 +168,7 @@ function AddStudentForm({ edit, studentToEdit, editDone, revalidate }) {
           className="w-full rounded mt-6 bg-[#115baa] text-white text-sm py-3 px-5"
           loading={isLoading}
           disabled={isLoading}
-          text={edit ? "Update Student Profile" : "Register Student"}
+          text="Register Student"
         />
       </form>
     </div>
