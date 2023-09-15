@@ -11,7 +11,6 @@ import React, { useState } from "react";
 
 function ExamInvigilator() {
   const [courseCode, setCourseCode] = useState("");
-  const [mat_no, setMatNo] = useState("");
   const { handleLogout } = useLogout();
   const { loading, error, validCourseCode, course } = useCourseChecker();
 
@@ -125,23 +124,7 @@ function ExamInvigilator() {
           </div>
         )}
 
-        {/* remove this to remove mat no */}
         {course && (
-          <div className="w-full px-3 mx-auto lg:max-w-xl">
-            <input
-              onChange={(e) => setMatNo(e.target.value)}
-              type="text"
-              name="mat_no"
-              id="mat_no"
-              value={mat_no}
-              placeholder="Mat No: e.g PSC2001113"
-              className={`border py-3 w-full text-sm px-4 rounded mx-auto mt-6`}
-              required
-            />
-          </div>
-        )}
-
-        {course && mat_no && (
           <div className="mt-10 mb-20">
             <div
               className="mx-auto mb-20 w-fit"
