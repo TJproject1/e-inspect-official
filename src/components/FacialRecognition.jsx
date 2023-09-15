@@ -61,32 +61,32 @@ function FaceRecognition({ setDetections, verify }) {
         faceapi.matchDimensions(canvasRef.current, displaySize);
 
         const detections = await faceapi
-          .detectSingleFace(
+          .detectAllFaces(
             videoRef.current,
             new faceapi.TinyFaceDetectorOptions()
           )
           .withFaceLandmarks()
-          .withFaceDescriptor();
+          .withFaceDescriptors();
 
-        // const resizedDetections = faceapi.resizeResults(
-        //   detections,
-        //   displaySize
-        // );
+        const resizedDetections = faceapi.resizeResults(
+          detections,
+          displaySize
+        );
 
-        // canvasRef &&
-        //   canvasRef.current &&
-        //   canvasRef.current
-        //     .getContext("2d")
-        //     .clearRect(0, 0, videoWidth, videoHeight);
-        // canvasRef &&
-        //   canvasRef.current &&
-        //   faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
-        // canvasRef &&
-        //   canvasRef.current &&
-        //   faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
+        canvasRef &&
+          canvasRef.current &&
+          canvasRef.current
+            .getContext("2d")
+            .clearRect(0, 0, videoWidth, videoHeight);
+        canvasRef &&
+          canvasRef.current &&
+          faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
+        canvasRef &&
+          canvasRef.current &&
+          faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
 
-        if (detections?.descriptor) {
-          handleClose([detections?.descriptor]);
+        if (detections.length > 0) {
+          handleClose([detections[0]?.descriptor]);
         }
       }
     }, 100);

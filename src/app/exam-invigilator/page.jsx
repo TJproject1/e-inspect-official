@@ -140,9 +140,7 @@ function ExamInvigilator() {
                   text="Validate"
                   loading={validating}
                   disabled={validating}
-                  onClick={() =>
-                    validateStudent(detections[0], courseCode, mat_no)
-                  }
+                  onClick={() => validateStudent(detections[0], courseCode)}
                   className="px-6 py-3 mx-auto text-lg font-semibold text-center text-white bg-green-500 rounded w-fit"
                 />
                 <PrimaryButton
