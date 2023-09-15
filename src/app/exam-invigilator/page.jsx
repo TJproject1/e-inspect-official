@@ -1,18 +1,29 @@
 "use client";
 
 import { PrimaryButton } from "@/components/Buttons";
+import FaceRecognition from "@/components/FacialRecognition";
 import ToastNotification from "@/components/ToastNotification";
 import useCourseChecker from "@/hooks/useCourseChecker";
 import { useLogout } from "@/hooks/useLogout";
+import useStudentValidator from "@/hooks/useStudentValidator";
 import Image from "next/image";
 import React, { useState } from "react";
 
 function ExamInvigilator() {
   const [courseCode, setCourseCode] = useState("");
+  const [mat_no, setMatNo] = useState("");
   const { handleLogout } = useLogout();
   const { loading, error, validCourseCode, course } = useCourseChecker();
 
-  const [studentIsRegistered, setStudentIsRegistered] = useState(false);
+  const [detections, setDetections] = useState([]);
+
+  const {
+    studentIsRegistered,
+    validateStudent,
+    loading: validating,
+    setStudentIsRegistered,
+    error: invalid,
+  } = useStudentValidator();
 
   return (
     <main className="bg-[#FEFEFE   w-screen">
@@ -88,7 +99,7 @@ function ExamInvigilator() {
         </div>
 
         {studentIsRegistered && (
-          <div className="mt-8 authorized">
+          <div className="mx-auto mt-8 authorized w-fit">
             <div className="positive flex text-[#115baa] font-semibold">
               Student is eligible for the Exam{" "}
               <span className="ml-4">
@@ -105,18 +116,70 @@ function ExamInvigilator() {
           </div>
         )}
 
+        {invalid && (
+          <div className="mx-auto mt-8 authorized w-fit">
+            <div className="flex font-semibold text-red-500 positive">
+              Student not eligible for the Exam
+            </div>
+            {/* <div className="negative flex text-[#aa2d11] font-semibold">Student is not eligible for the Exam <span className='ml-2 '><Image src={"/images/delete.png"} width={24} height={24} className="w-[24px] h-[24px]"/></span></div> */}
+          </div>
+        )}
+
+        {/* remove this to remove mat no */}
         {course && (
-          <div className="cursor-pointer border rounded h-[40vh] bg-gray-200 w-full mt-10 mb-24 text-center p-8">
-            <span className="text-sm opacity-40">
-              Click to Scan before entry
-            </span>
-            <Image
-              src={"/images/face-scan.png"}
-              width={200}
-              height={200}
-              alt="face"
-              className="mx-auto"
+          <div className="w-full px-3 mx-auto lg:max-w-xl">
+            <input
+              onChange={(e) => setMatNo(e.target.value)}
+              type="text"
+              name="mat_no"
+              id="mat_no"
+              value={mat_no}
+              placeholder="Mat No: e.g PSC2001113"
+              className={`border py-3 w-full text-sm px-4 rounded mx-auto mt-6`}
+              required
             />
+          </div>
+        )}
+
+        {course && mat_no && (
+          <div className="mt-10 mb-20">
+            <div
+              className="mx-auto mb-20 w-fit"
+              style={{
+                display: detections?.length === 0 ? "none" : "block",
+              }}
+            >
+              <h2 className="text-lg font-semibold text-center">
+                Face Detected
+              </h2>
+              <span className="flex flex-wrap items-center mt-4 space-x-6">
+                <PrimaryButton
+                  text="Validate"
+                  loading={validating}
+                  disabled={validating}
+                  onClick={() =>
+                    validateStudent(detections[0], courseCode, mat_no)
+                  }
+                  className="px-6 py-3 mx-auto text-lg font-semibold text-center text-white bg-green-500 rounded w-fit"
+                />
+                <PrimaryButton
+                  text="Re-scan"
+                  onClick={() => {
+                    setDetections([]);
+                    setStudentIsRegistered(false);
+                  }}
+                  disabled={validating}
+                  className="w-fit mx-auto font-semibold bg-[#115baa] text-white py-3 px-6 text-lg text-center rounded"
+                />
+              </span>
+            </div>
+            <div
+              style={{
+                display: detections?.length > 0 ? "none" : "block",
+              }}
+            >
+              <FaceRecognition setDetections={setDetections} />
+            </div>
           </div>
         )}
       </section>
