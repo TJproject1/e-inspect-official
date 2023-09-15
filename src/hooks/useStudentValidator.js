@@ -1,11 +1,4 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { useState } from "react";
 import { db } from "../../firebase";
 
@@ -14,14 +7,13 @@ const useStudentValidator = () => {
   const [error, setError] = useState(null);
   const [studentIsRegistered, setStudentIsRegistered] = useState(false);
 
-  const validateStudent = async (descriptor, code, mat_no) => {
+  const validateStudent = async (descriptor, code) => {
     setLoading(true);
     try {
       const q = query(
         collection(db, "students"),
 
-        where("courses", "array-contains", code),
-        where("mat_no", "==", mat_no)
+        where("courses", "array-contains", code)
       );
 
       const querySnapshot = await getDocs(q);
